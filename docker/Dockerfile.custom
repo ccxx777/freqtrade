@@ -1,11 +1,11 @@
-FROM freqtradeorg/freqtrade:develop
+FROM freqtradeorg/freqtrade:stable
 
-# Switch user to root if you must install something from apt
-# Don't forget to switch the user back below!
-# USER root
-
-# The below dependency - pyti - serves as an example. Please use whatever you need!
-RUN pip install --user pyti
-
-# Switch back to user (only if you required root above)
-# USER ftuser
+# 从用户的 GitHub Release 下载并替换为最新的 FreqUI 中文汉化版
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends curl unzip \
+    && curl -sL https://github.com/ccxx777/frequi/releases/latest/download/freqUI.zip -o /tmp/frequi.zip \
+    && unzip -o /tmp/frequi.zip -d /freqtrade/freqtrade/rpc/api_server/ui/installed/ \
+    && echo "chinese-latest" > /freqtrade/freqtrade/rpc/api_server/ui/installed/.uiversion \
+    && rm -f /tmp/frequi.zip \
+    && apt-get purge -y curl unzip && apt-get clean && rm -rf /var/lib/apt/lists/*
+USER ftuser

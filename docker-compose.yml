@@ -1,27 +1,17 @@
 ---
 services:
   freqtrade:
-    image: freqtradeorg/freqtrade:stable
-    # image: freqtradeorg/freqtrade:develop
-    # Use plotting image
-    # image: freqtradeorg/freqtrade:develop_plot
-    # # Enable GPU Image and GPU Resources (only relevant for freqAI)
-    # # Make sure to uncomment the whole deploy section
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: 1
-    #           capabilities: [gpu]
-    # Build step - only needed when additional dependencies are needed
-    # build:
-    #   context: .
-    #   dockerfile: "./docker/Dockerfile.custom"
+    image: freqtrade_chinese:latest
+    # Build custom image with Chinese FreqUI
+    build:
+      context: .
+      dockerfile: "./docker/Dockerfile.custom"
     restart: unless-stopped
     container_name: freqtrade
     volumes:
       - "./user_data:/freqtrade/user_data"
+      # 若不想通过 Dockerfile build，也可直接挂载本地安装的中文UI目录：
+      # - "./freqtrade/rpc/api_server/ui/installed:/freqtrade/freqtrade/rpc/api_server/ui/installed"
     # Expose api on port 8080 (localhost only)
     # Please read the https://www.freqtrade.io/en/stable/rest-api/ documentation
     # for more information.
